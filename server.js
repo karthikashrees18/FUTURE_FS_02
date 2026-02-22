@@ -8,13 +8,14 @@ const app = express();
 
 // --- 1. Middleware ---
 app.use(cors());
-app.use(express.json()); // Parses incoming JSON requests
-app.use(express.static('public')); // Serves your frontend files automatically
+app.use(express.json()); 
+app.use(express.static('public')); 
 
 // --- 2. Database Connection ---
+// When on Render, it will use your Atlas URI from the Environment Variables
 const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/crmDB';
 mongoose.connect(mongoURI)
-  .then(() => console.log("✅ Connected to MongoDB via Compass"))
+  .then(() => console.log("✅ Connected to MongoDB Successfully"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
 // --- 3. Lead Model ---
@@ -22,26 +23,24 @@ const leadSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   source: { type: String, default: 'Website Form' },
-  status: { type: String, default: 'New' }, // New, Contacted, Converted
+  status: { type: String, default: 'New' }, 
   notes: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 
 const Lead = mongoose.model('Lead', leadSchema);
 
-// --- 4. API Routes (The "Logic") ---
+// --- 4. API Routes ---
 
-// GET: Fetch all leads for the Admin Dashboard
 app.get('/api/leads', async (req, res) => {
   try {
-    const leads = await Lead.find().sort({ createdAt: -1 }); // Newest first
+    const leads = await Lead.find().sort({ createdAt: -1 });
     res.json(leads);
   } catch (err) {
     res.status(500).json({ message: "Error fetching leads" });
   }
 });
 
-// POST: Create a new lead (when a customer fills the form)
 app.post('/api/leads', async (req, res) => {
   try {
     const newLead = new Lead(req.body);
@@ -52,7 +51,6 @@ app.post('/api/leads', async (req, res) => {
   }
 });
 
-// PUT: Update lead status or notes (for the Admin to manage)
 app.put('/api/leads/:id', async (req, res) => {
   try {
     const updatedLead = await Lead.findByIdAndUpdate(
@@ -66,7 +64,6 @@ app.put('/api/leads/:id', async (req, res) => {
   }
 });
 
-// DELETE: Remove a lead (Optional but helpful)
 app.delete('/api/leads/:id', async (req, res) => {
   try {
     await Lead.findByIdAndDelete(req.params.id);
@@ -77,7 +74,8 @@ app.delete('/api/leads/:id', async (req, res) => {
 });
 
 // --- 5. Start Server ---
-const PORT = process.env.PORT || 5000;
+// 10000 is the standard port for Render's free tier
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
