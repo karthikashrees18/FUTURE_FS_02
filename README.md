@@ -47,8 +47,9 @@ mini-crm/
 Clone the repository:
 
 Bash
-git clone [https://github.com/REPLACE_WITH_YOUR_USERNAME/REPLACE_WITH_YOUR_REPO_NAME.git](https://github.com/REPLACE_WITH_YOUR_USERNAME/REPLACE_WITH_YOUR_REPO_NAME.git)
+git clone https://github.com/karthikashrees18/FUTURE_FS_02
 cd mini-crm
+
 Install Dependencies:
 
 Bash
@@ -59,6 +60,7 @@ Create a .env file in the root directory and add your MongoDB connection string:
 Plaintext
 MONGO_URI=your_mongodb_atlas_connection_string
 PORT=10000
+
 Run the Server:
 
 Bash
