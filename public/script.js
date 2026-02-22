@@ -22,7 +22,7 @@ document.getElementById('leadForm').addEventListener('submit', async (e) => {
     }
 });
 
-// 2. Fetch and Display Leads
+// 2. Fetch and Display Leads (Updated with Delete Button)
 async function fetchLeads() {
     const response = await fetch('/api/leads');
     const leads = await response.json();
@@ -44,6 +44,11 @@ async function fetchLeads() {
                     </select>
                 </td>
                 <td>${new Date(lead.createdAt).toLocaleDateString()}</td>
+                <td>
+                    <button class="delete-btn" onclick="deleteLead('${lead._id}')">
+                        Delete
+                    </button>
+                </td>
             </tr>
         `;
         tableBody.innerHTML += row;
@@ -58,4 +63,24 @@ async function updateStatus(id, newStatus) {
         body: JSON.stringify({ status: newStatus })
     });
     fetchLeads();
+}
+
+// 4. Function to delete a lead (The DELETE request)
+async function deleteLead(id) {
+    if (confirm("Are you sure you want to delete this lead?")) {
+        try {
+            const response = await fetch(`/api/leads/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                console.log("Lead deleted");
+                fetchLeads(); // Refresh the table
+            } else {
+                alert("Failed to delete the lead.");
+            }
+        } catch (error) {
+            console.error("Error deleting lead:", error);
+        }
+    }
 }
